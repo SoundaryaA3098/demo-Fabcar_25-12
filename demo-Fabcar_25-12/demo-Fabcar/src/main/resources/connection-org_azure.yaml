@@ -1,0 +1,120 @@
+---
+name: first-network-org
+version: 1.0.0
+client:
+  organization: Org0
+  connection:
+    timeout:
+      peer:
+        endorser: '300'
+
+channels:
+  # name of the channel
+  composerchannelrest:
+    # Required. list of orderers designated by the application to use for transactions on this
+    # channel. This list can be a result of access control ("org1" can only access "ordererA"), or
+    # operational decisions to share loads from applications among the orderers.  The values must
+    # be "names" of orgs defined under "organizations/peers"
+    orderers:
+      - orderer0
+
+    # Required. list of peers from participating orgs
+    peers:
+      peer0:
+        # [Optional]. will this peer be sent transaction proposals for endorsement? The peer must
+        # have the chaincode installed. The app can also use this property to decide which peers
+        # to send the chaincode install request. Default: true
+        endorsingPeer: true
+
+        # [Optional]. will this peer be sent query proposals? The peer must have the chaincode
+        # installed. The app can also use this property to decide which peers to send the
+        # chaincode install request. Default: true
+        chaincodeQuery: true
+
+        # [Optional]. will this peer be sent query proposals that do not require chaincodes, like
+        # queryBlock(), queryTransaction(), etc. Default: true
+        ledgerQuery: true
+
+        # [Optional]. will this peer be the target of the SDK's listener registration? All peers can
+        # produce events but the app typically only needs to connect to one to listen to events.
+        # Default: true
+        eventSource: true
+        discover: true
+
+      peer1:
+        endorsingPeer: true
+        chaincodeQuery: true
+        ledgerQuery: true
+        eventSource: true
+        discover: true
+
+organizations:
+  Org0:
+    mspid: Org0MSP
+    peers:
+    - peer0
+    - peer1
+    certificateAuthorities:
+    - ca.org0
+
+    adminPrivateKey:
+      path: /root/bcnetwork/conf/crypto-config/peerOrganizations/org0/users/Admin@org0/msp/keystore/5838b10ccf3f0bac2ab12ff88d102e3ccd334f1ee6a0374b152e69305e0510d6_sk
+    signedCert:
+      path: /root/bcnetwork/conf/crypto-config/peerOrganizations/org0/users/Admin@org0/msp/signcerts/Admin@org0-cert.pem
+
+orderers:
+  orderer0:
+    url: grpcs://104.46.227.193:7050
+
+    # these are standard properties defined by the gRPC library
+    # they will be passed in as-is to gRPC client constructor
+    grpcOptions:
+      ssl-target-name-override: orderer0
+      
+    tlsCACerts:
+      path: /root/bcnetwork/conf/crypto-config/ordererOrganizations/ordererorg0/orderers/orderer0.ordererorg0/tls/ca.crt
+
+peers:
+  peer0:
+    url: grpcs://104.215.53.82:7051
+    tlsCACerts:
+      path: /root/bcnetwork/conf/crypto-config/peerOrganizations/org0/tlsca/tlsca.org0-cert.pem
+              
+    grpcOptions:
+      ssl-target-name-override: peer0
+      hostnameOverride: peer0
+  peer1:
+    url: grpcs://104.215.53.203:7051
+    tlsCACerts:
+      path: /root/bcnetwork/conf/crypto-config/peerOrganizations/org0/tlsca/tlsca.org0-cert.pem
+        
+    grpcOptions:
+      ssl-target-name-override: peer1
+      hostnameOverride: peer1
+certificateAuthorities:
+  ca.org0:
+    url: https://104.215.59.188:7054
+    caName: ca.org0
+    tlsCACerts:
+      pem: |
+        -----BEGIN CERTIFICATE-----
+        MIICIjCCAcigAwIBAgIRAPnPaxhQ/M1XnVVINP+PhzgwCgYIKoZIzj0EAwIwWzEL
+        MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG
+        cmFuY2lzY28xDTALBgNVBAoTBG9yZzAxEDAOBgNVBAMTB2NhLm9yZzAwHhcNMTkw
+        OTEyMjMxMzAwWhcNMjkwOTA5MjMxMzAwWjBbMQswCQYDVQQGEwJVUzETMBEGA1UE
+        CBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZyYW5jaXNjbzENMAsGA1UEChME
+        b3JnMDEQMA4GA1UEAxMHY2Eub3JnMDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IA
+        BKi+v4j5AqlLzKcJ67IovhKiCvBOclcT1dZqWU1vHKQWMEwZeDBJTHYITPfemZCP
+        Cw5r3JqzrD+5zY+8L4mtkIqjbTBrMA4GA1UdDwEB/wQEAwIBpjAdBgNVHSUEFjAU
+        BggrBgEFBQcDAgYIKwYBBQUHAwEwDwYDVR0TAQH/BAUwAwEB/zApBgNVHQ4EIgQg
+        HKNGTEbVfRSMLmyMLVIoaDYX01I5B8+aBxMU6deBl2wwCgYIKoZIzj0EAwIDSAAw
+        RQIhAOWPn4mDBAj1Budhh+wQhw7lmcsq7AUjV8InLxLLpsrYAiBWJVNiA21MFGat
+        eQtKd+lD4phY0JwodluMyZYzJF0LXg==
+        -----END CERTIFICATE-----
+
+      client:
+        keyfile: /root/bcnetwork/conf/crypto-config/peerOrganizations/org0/users/User1@org0/tls/client.key
+        certfile: /root/bcnetwork/conf/crypto-config/peerOrganizations/org0/users/User1@org0/tls/client.crt
+        
+    httpOptions:
+      verify: false
