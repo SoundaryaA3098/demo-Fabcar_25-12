@@ -1,2 +1,2 @@
 # demo-Fabcar_sdk
-# It is sdk repository
+# It is an sdk repository
